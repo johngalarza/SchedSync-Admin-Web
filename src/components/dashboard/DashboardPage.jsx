@@ -17,12 +17,6 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="stats-grid">
-          {/* {stats.map((stat, index) => (
-            <StatCard key={stat.label} {...stat} index={index} />
-          ))} */}
-        </div>
-
         <div className="content-grid fade-in-delay">
           <div className="content-card">
             <h2>Panel Administrativo</h2>

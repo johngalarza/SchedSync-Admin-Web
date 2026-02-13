@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../../context/useAuth';
 import {
   getReservasPendientes,
@@ -7,9 +7,14 @@ import {
 
 export const ReservasAdmin = () => {
   const { user } = useAuth();
+
   const [reservas, setReservas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // 🔥 NUEVOS ESTADOS PARA FILTRO
+  const [fechaDesde, setFechaDesde] = useState('');
+  const [fechaHasta, setFechaHasta] = useState('');
 
   const cargarReservas = async () => {
     try {
@@ -24,17 +29,42 @@ export const ReservasAdmin = () => {
   };
 
   useEffect(() => {
-    console.log("TOKEN:", user.token);
     cargarReservas();
   }, []);
+
+  // 🔥 FILTRO LOCAL
+  const reservasFiltradas = useMemo(() => {
+    return reservas.filter((reserva) => {
+      const fechaReserva = new Date(reserva.fecha);
+
+      const cumpleDesde =
+        !fechaDesde ||
+        fechaReserva >= new Date(fechaDesde);
+
+      const cumpleHasta =
+        !fechaHasta ||
+        fechaReserva <= new Date(fechaHasta + 'T23:59:59');
+
+      return cumpleDesde && cumpleHasta;
+    });
+  }, [reservas, fechaDesde, fechaHasta]);
 
   const handleEstado = async (id, estado) => {
     try {
       await actualizarEstadoReserva(id, estado, user.token);
-      cargarReservas();
+
+      // 🔥 Actualización local sin recargar
+      setReservas((prev) =>
+        prev.filter((r) => r.id_reserva !== id)
+      );
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  const limpiarFiltros = () => {
+    setFechaDesde('');
+    setFechaHasta('');
   };
 
   if (loading) return <div className="admin-card">Cargando...</div>;
@@ -44,30 +74,53 @@ export const ReservasAdmin = () => {
     <div className="admin-card">
       <h2>Reservas Pendientes</h2>
 
-      {reservas.length === 0 ? (
+      {/* 🔥 FILTROS */}
+      <div className="filtros">
+        <input
+          type="date"
+          value={fechaDesde}
+          onChange={(e) => setFechaDesde(e.target.value)}
+        />
+        <input
+          type="date"
+          value={fechaHasta}
+          onChange={(e) => setFechaHasta(e.target.value)}
+        />
+        <button className="btn clear" onClick={limpiarFiltros}>
+          Limpiar
+        </button>
+      </div>
+
+      {reservasFiltradas.length === 0 ? (
         <p className="empty-text">No hay reservas pendientes</p>
       ) : (
         <div className="reservas-grid">
-          {reservas.map((reserva) => (
+          {reservasFiltradas.map((reserva) => (
             <div key={reserva.id_reserva} className="reserva-item">
               <div className="reserva-info">
                 <strong>Espacio:</strong> {reserva.id_espacio}
                 <br />
-                <strong>Fecha:</strong> {reserva.fecha}
+                <strong>Fecha:</strong>{' '}
+                {new Date(reserva.fecha).toLocaleDateString()}
                 <br />
-                <strong>Horario:</strong> {reserva.hora_inicio} - {reserva.hora_fin}
+                <strong>Horario:</strong>{' '}
+                {reserva.hora_inicio} - {reserva.hora_fin}
               </div>
 
               <div className="reserva-actions">
                 <button
                   className="btn approve"
-                  onClick={() => handleEstado(reserva.id_reserva, 'APROBADA')}
+                  onClick={() =>
+                    handleEstado(reserva.id_reserva, 'APROBADA')
+                  }
                 >
                   Aprobar
                 </button>
                 <button
                   className="btn reject"
-                  onClick={() => handleEstado(reserva.id_reserva, 'CANCELADA')}
+                  onClick={() =>
+                    handleEstado(reserva.id_reserva, 'CANCELADA')
+                  }
                 >
                   Rechazar
                 </button>
@@ -90,7 +143,31 @@ export const ReservasAdmin = () => {
 
         .admin-card h2 {
           font-size: 22px;
+          margin-bottom: 20px;
+        }
+
+        .filtros {
+          display: flex;
+          gap: 12px;
           margin-bottom: 24px;
+          flex-wrap: wrap;
+        }
+
+        .filtros input {
+          padding: 8px 12px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px;
+          color: white;
+        }
+
+        .clear {
+          background: rgba(255,255,255,0.1);
+          color: white;
+        }
+
+        .clear:hover {
+          background: rgba(255,255,255,0.2);
         }
 
         .empty-text {

@@ -1,11 +1,18 @@
+/* ===============================
+   CARD PRINCIPAL
+================================= */
 .incidencias-card {
   background: rgba(20, 20, 20, 0.6);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 32px;
+  color: white;
 }
 
+/* ===============================
+   HEADER
+================================= */
 .incidencias-header {
   display: flex;
   justify-content: space-between;
@@ -14,18 +21,65 @@
 }
 
 .incidencias-header h2 {
-  color: #fff;
   font-size: 22px;
+  font-weight: 600;
+  margin: 0;
 }
 
-.incidencias-header select {
+/* ===============================
+   FILTROS
+================================= */
+.filtros-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filtros-container select,
+.filtros-container input[type="date"] {
   padding: 8px 12px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   color: #fff;
   border-radius: 8px;
+  font-size: 13px;
+  transition: 0.2s ease;
 }
 
+.filtros-container select:focus,
+.filtros-container input[type="date"]:focus {
+  outline: none;
+  border: 1px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+/* ===============================
+   BOTÓN PDF
+================================= */
+.btn-pdf {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-pdf:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+.btn-pdf:active {
+  transform: scale(0.96);
+}
+
+/* ===============================
+   TABLA
+================================= */
 .incidencias-table {
   width: 100%;
   border-collapse: collapse;
@@ -41,39 +95,149 @@
 .incidencias-table th {
   color: rgba(255,255,255,0.5);
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
 }
 
 .incidencias-table td {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.85);
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
+.incidencias-table tr {
+  transition: background 0.2s ease;
+}
+
+.incidencias-table tr:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+/* ===============================
+   BADGES
+================================= */
 .badge {
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
+  text-transform: capitalize;
 }
 
-.badge.pendiente {
-  background: rgba(255, 165, 0, 0.15);
-  color: orange;
+/* Reportado */
+.badge.reportado {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
-.badge.revision {
-  background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
+/* Mantenimiento */
+.badge.mantenimiento {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
 }
 
+/* Arreglado */
 .badge.arreglado {
   background: rgba(34, 197, 94, 0.15);
   color: #22c55e;
 }
 
+/* ===============================
+   LOADING
+================================= */
 .loading-text {
   color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 20px;
 }
 
+/* ===============================
+   MODAL
+================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 30px;
+  border-radius: 16px;
+  width: 500px;
+  max-width: 90%;
+  color: white;
+  animation: fadeIn 0.25s ease;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.modal-content p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.modal-image {
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.3s ease;
+}
+
+.modal-image:hover {
+  transform: scale(1.03);
+}
+
+/* Botón cerrar */
+.btn-cerrar {
+  margin-top: 20px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.btn-cerrar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+/* ===============================
+   ANIMACIÓN
+================================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===============================
+   SELECT GLOBAL
+================================= */
 select {
   background: rgba(20, 20, 20, 0.9);
   color: white;
